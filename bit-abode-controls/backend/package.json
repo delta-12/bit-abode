@@ -1,0 +1,27 @@
+{
+  "name": "bit-abode-backend",
+  "version": "1.0.0",
+  "description": "Backend for handling Bit Abode Controls",
+  "main": "server.js",
+  "engines" : {
+    "node": "17.3.0",
+    "npm": "8.3.0"
+  },
+  "scripts": {
+    "server": "nodemon server.js",
+    "dev": "concurrently \"npm run server\" \"npm run start-frontend --prefix ../\""
+  },
+  "author": "delta12",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.1",
+    "concurrently": "^7.0.0",
+    "express": "^4.17.2",
+    "is-empty": "^1.2.0",
+    "mongoose": "^6.1.7",
+    "nodemon": "^2.0.15",
+    "path": "^0.12.7",
+    "validator": "^13.7.0"
+  }
+}

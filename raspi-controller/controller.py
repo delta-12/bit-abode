@@ -6,11 +6,11 @@ import json
 import uuid
 from config import host, name, password, serial_port, baudrate, get_local_address
 from commands import CommandHandler
-from serial_com import SerialCom
+# from serial_com import SerialCom
 
 uid = ""
 CH = CommandHandler()
-SC = SerialCom(serial_port, baudrate)
+# SC = SerialCom(serial_port, baudrate)
 
 
 async def main():
@@ -31,9 +31,9 @@ async def main():
                 if CH.action == 's':
                     print("Sending to serial...")
                     print(CH.cmd)
-                    SC.write(CH.cmd)
+                    # SC.write(CH.cmd)
 
 
 if __name__ == "__main__":
-    SC.reset_buffer()
+    # SC.reset_buffer()
     asyncio.run(main())

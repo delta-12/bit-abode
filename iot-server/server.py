@@ -31,7 +31,7 @@ async def receive_command(websocket, connected):
 
 # Handle a connection from the Controller
 async def start(websocket, event):
-    print("Controller connecting with UID: " + event["uid"])
+    print("Controller connecting with name: " + event["name"])
 
     connected = {websocket}
     key = secrets.token_urlsafe(12)
@@ -51,32 +51,32 @@ async def start(websocket, event):
             "key": key
         }
         if add_controller(data):
-            print("Controller with UID " +
-                  event["uid"] + " successfully connected")
+            print("Controller with Name " +
+                  event["name"] + " successfully connected")
             # receive and send commands if Controller is successfully added to db
             response["success"] = True
             await websocket.send(json.dumps(response))
             await receive_command(websocket, connected)
         else:
-            print("Controller with UID " +
-                  event["uid"] + " did not successfully connected")
+            print("Controller with Name " +
+                  event["name"] + " did not successfully connected")
             response["success"] = False
             await websocket.send(json.dumps(response))
     finally:
-        print("Controller with UID " + event["uid"] + " disconnecting")
+        print("Controller with Name " + event["name"] + " disconnecting")
         del JOIN[key]
         data["status"] = "0"
         if change_controller_status(data):
-            print("Successfully updated Controller with UID " +
-                  event["uid"] + " to status offline")
+            print("Successfully updated Controller with Name " +
+                  event["name"] + " to status offline")
             msg = {
                 "type": "checkConnected",
                 "status": False
             }
             websockets.broadcast(connected, json.dumps(msg))
         else:
-            print("Did not successfully update Controller with UID " +
-                  event["uid"] + " to status offline")
+            print("Did not successfully update Controller with Name " +
+                  event["name"] + " to status offline")
         return
 
 
