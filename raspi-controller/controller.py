@@ -4,7 +4,7 @@ import asyncio
 import websockets
 import json
 import uuid
-from config import host, uid as config_uid, password, serial_port, baudrate, add_uid, get_local_address
+from config import host, name, password, serial_port, baudrate, get_local_address
 from commands import CommandHandler
 from serial_com import SerialCom
 
@@ -17,7 +17,7 @@ async def main():
     async with websockets.connect(host) as websocket:
         event = {
             "type": "init",
-            "uid": uid,
+            "name": name,
             "password": password,
             "localAddress": get_local_address()
         }
@@ -35,10 +35,5 @@ async def main():
 
 
 if __name__ == "__main__":
-    if len(config_uid) == 0:
-        uid = str(uuid.uuid4())
-        add_uid(uid)
-    else:
-        uid = config_uid
     SC.reset_buffer()
     asyncio.run(main())

@@ -7,7 +7,7 @@ config = configparser.ConfigParser()
 config.read("config.ini")
 
 # Controller info
-uid = config["Controller"]["uid"]
+name = config["Controller"]["name"]
 password = config["Controller"]["password"]
 serial_port = config["Controller"]["serial_port"]
 baudrate = config["Controller"]["baudrate"]

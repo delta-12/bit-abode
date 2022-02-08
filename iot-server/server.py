@@ -44,7 +44,7 @@ async def start(websocket, event):
             "type": "init"
         }
         data = {
-            "uid": event["uid"],
+            "name": event["name"],
             "password": event["password"],
             "status": "1",
             "localAddress": event["localAddress"],

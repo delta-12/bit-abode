@@ -10,7 +10,7 @@ def add_controller(data):
     # return info about whether controller has been added or status toggled
     if r.status_code == 200:
         return True
-    if "Duplicate UID" in r.text:
+    if "Duplicate Name" in r.text:
         return change_controller_status(data)
     return False
 
