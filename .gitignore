@@ -1,0 +1,8 @@
+build*
+node_modules*
+.vscode*
+/bit-abode-controls/backend/config/keys.js
+
+# python envs
+__pycache__*
+env*
