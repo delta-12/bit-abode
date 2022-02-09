@@ -8,6 +8,18 @@ const DeviceSchema =  new Schema({
         unique: true,
         trim: true
     },
+    type: {
+        type: String,
+        required: true
+    },
+    port: {
+        type: Number,
+        required: true
+    },
+    controllerKey: {
+        type: String,
+        required: true
+    },
     name: {
         type: String,
         required: true,
@@ -18,14 +30,7 @@ const DeviceSchema =  new Schema({
         required: true,
         trim: true
     },
-    status: {
-        type: Boolean,
-        required: true
-    },
-    localNetwork: {
-        type: String
-    },
-    localAddress: {
+    state: {
         type: String
     },
     dateConnected: {

@@ -1,25 +1,57 @@
 #!/usr/bin/env python3
 
+import re
 from struct import pack
+import uuid
 
 
 class LightsCommand(object):
-    def __init__(self, command, state):
+    def __init__(self, command, port, state):
         self.command = command
+        self.port = port
         self.state = state
 
     def clamp(n, minN, maxN):
         return int(max(min(maxN, n), minN))
 
     def clamp_vals(self):
-        self.l_direction = self.clamp(self.command, 0, 1)
+        self.port = self.clamp(self.port, 1, 6)
+        self.command = self.clamp(self.command, 0, 1)
 
     def export_command(self):
         self.clamp_vals(self)
-        return pack("<2B", 0, self.command)
+        return pack("<3B", 0, self.port, self.command)
+
+
+class AddDevice(object):
+    def __init__(self, name, device_type, port, controllerKey, controller):
+        self.name = name
+        self.device_type = device_type
+        self.port = port
+        self.controllerKey = controllerKey
+        self.controller = controller
+
+    def export_req(self):
+        data = {
+            "uid": str(uuid.uuid4()),
+            "type": self.device_type,
+            "port": self.port,
+            "name": self.name,
+            "controllerKey": self.controllerKey,
+            "controller": self.controller,
+        }
+        req = {
+            "type": "add_device",
+            "id": 1,
+            "data": data
+        }
+        return req
 
 
 class CommandHandler(object):
+    def __init__(self, controller, controllerKey):
+        self.controller = controller
+        self.controllerKey = controllerKey
 
     current_command = {}
     msg = {}
@@ -43,7 +75,21 @@ class CommandHandler(object):
             return True
         return False
 
-    def light(self):
+    def add_device(self):
+        command = self.current_command
+        if command["id"] == 0:
+            self.action = 'r'
+            AD = AddDevice
+            AD.controller = self.controller
+            AD.controllerKey = self.controllerKey
+            AD.name = command["data"]["name"]
+            AD.device_type = command["data"]["type"]
+            AD.port = command["data"]["port"]
+            self.msg = AD.export_req(AD)
+            return True
+        return False
+
+    def lights(self):
         command = self.current_command
         if "command" in command:
             LC = LightsCommand

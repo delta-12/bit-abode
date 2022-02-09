@@ -3,7 +3,7 @@ const mongoose = require("mongoose")
 const path = require("path")
 const bodyParser = require("body-parser")
 const controller = require("./routes/api/controller")
-// const devices = require("./routes/api/devices")
+const devices = require("./routes/api/devices")
 const db = process.env.MONGOURI || require("./config/keys").mongoURI
 
 const server = express()
@@ -24,7 +24,7 @@ server.use(
 server.use(bodyParser.json())
 
 server.use("/api/controller", controller)
-// server.use("/api/devices", devices)
+server.use("/api/devices", devices)
 
 server.use(express.static('../build'))
 server.get('*', (req, res) => {

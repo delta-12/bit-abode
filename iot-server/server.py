@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
 import os
+from re import X
 import signal
 import asyncio
 import json
 import secrets
 import websockets
-from request_handler import add_controller, change_controller_status
+from request_handler import add_controller, change_controller_status, add_device
 
 JOIN = {}
 
@@ -27,6 +28,16 @@ async def receive_command(websocket, connected):
         print(command)
         # broadcast commands
         websockets.broadcast(connected, json.dumps(command))
+        if command["type"] == "add_device" and command["id"] == 1:
+            add_device_msg = {
+                "type": "add_device",
+                "id": 2
+            }
+            if add_device(command["data"]):
+                add_device_msg["response"] = True
+            else:
+                add_device_msg["response"] = False
+            websockets.broadcast(connected, json.dumps(add_device_msg))
 
 
 # Handle a connection from the Controller

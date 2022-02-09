@@ -1,99 +1,17 @@
-let wheelCommand = {
-    type: "wheel",
-    command: {
-        left: {
-            direction: null,
-            speed: null
-        },
-        right: {
-            direction: null,
-            speed: null
-        }
-    }
+let add_device = {
+    type: "add_device",
+    id: 0,
+    data: {}
 }
 
-let forward = {
-    type: "wheel",
-    command: {
-        left: {
-            direction: 1,
-            speed: 255
-        },
-        right: {
-            direction: 1,
-            speed: 255
-        }
-    }
+let lightsOff = {
+    type: "lights",
+    command: 0
 }
 
-let reverse = {
-    type: "wheel",
-    command: {
-        left: {
-            direction: 0,
-            speed: 255
-        },
-        right: {
-            direction: 0,
-            speed: 255
-        }
-    }
+let lightsOn = {
+    type: "lights",
+    command: 1
 }
 
-let left = {
-    type: "wheel",
-    command: {
-        left: {
-            direction: 0,
-            speed: 255
-        },
-        right: {
-            direction: 1,
-            speed: 255
-        }
-    }
-}
-
-let right = {
-    type: "wheel",
-    command: {
-        left: {
-            direction: 1,
-            speed: 255
-        },
-        right: {
-            direction: 0,
-            speed: 255
-        }
-    }
-}
-
-let stop = {
-    type: "wheel",
-    command: {
-        left: {
-            direction: null,
-            speed: 0
-        },
-        right: {
-            direction: null,
-            speed: 0
-        }
-    }
-}
-
-let brake = {
-    type: "wheel",
-    command: {
-        left: {
-            direction: 0,
-            speed: 0
-        },
-        right: {
-            direction: 0,
-            speed: 0
-        }
-    }
-}
-
-export { wheelCommand, forward, reverse, left, right, stop, brake }
+export { add_device, lightsOff, lightsOn }

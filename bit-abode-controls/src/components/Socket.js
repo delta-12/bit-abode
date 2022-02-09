@@ -1,6 +1,6 @@
 let connect = (key, cb) => {
   console.log("Attempting Connection...")
-  let socket = new WebSocket("wss://redbot-c2-server.herokuapp.com")
+  let socket = new WebSocket("ws://localhost:10801")
   socket.onopen = () => {
     console.log("Successfully Connected")
     cb({ socket: socket, socketConnected: true })
@@ -14,15 +14,17 @@ let connect = (key, cb) => {
     let msgJSON = JSON.parse(msg.data)
     console.log(msgJSON)
     switch (msgJSON.type) {
-      // case 0:
-      //   cb({ wheels: msgJSON.info })
-      //   break
       case "checkConnected":
         cb({ redbotConnected: msgJSON.status })
-        if(msgJSON.status === false) {
+        if (msgJSON.status === false) {
           disconnect(socket)
         }
-        break;
+        break
+      case "add_device":
+        if (msgJSON.id === 2) {
+          cb({ addDeviceResponse: msgJSON.response })
+        }
+        break
       default:
         break
     }
@@ -30,7 +32,7 @@ let connect = (key, cb) => {
 
   socket.onclose = event => {
     console.log("Socket Closed Connection: ", event)
-    cb({ socket: null, socketConnected: false, redbotConnected: false })
+    cb({ socket: null, socketConnected: false, redbotConnected: false, showModal: true, name: "", password: "" })
   }
 
   socket.onerror = error => {

@@ -48,7 +48,6 @@ router.post("/addController", (req, res) => {
     })
 })
 
-// add authentication
 router.post("/removeController", (req, res) => {
     const { errors, isValid } = validateConnection(req.body)
     if (!isValid) {
@@ -92,33 +91,6 @@ router.post("/connect", (req, res) => {
                 return res.status(400).json({ auth: "Incorrect Name or Password" })
             }
         })
-    })
-})
-
-router.get("/online", (req, res) => {
-    Controller.find({ status: true }).then(onlineList => {
-        if (onlineList) {
-            return res.status(200).json({ online: onlineList })
-        }
-        return res.status(404).json({ error: "Failed to find online controllers" })
-    })
-})
-
-router.get("/offline", (req, res) => {
-    Controller.find({ status: false }).then(offlineList => {
-        if (offlineList) {
-            return res.status(200).json({ offline: offlineList })
-        }
-        return res.status(404).json({ error: "Failed to find offline controllers" })
-    })
-})
-
-router.get("/all", (req, res) => {
-    Controller.find().then(list => {
-        if (list) {
-            return res.status(200).json({ all: list })
-        }
-        return res.status(404).json({ error: "Failed to find controllers" })
     })
 })
 

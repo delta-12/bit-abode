@@ -1,11 +1,16 @@
 import { Component } from "react"
 import axios from "axios"
 import Header from "../components/Header"
-// import Table from "../components/Table/Table"
 import ConnectModal from "../components/ConnectModal"
+import ControllerStatusBox from "../components/ControllerStatusBox"
+import Devices from "../components/Devices/Devices"
 import {connect, sendMsg, disconnect} from "../components/Socket"
+import { add_device, lightsOff, lightsOn } from "../components/Commands"
+import InputError from "../components/InputError"
 
-export default class C2Server extends Component {
+export default class Dashboard extends Component {
+  
+  intervalID
 
   state = {
     showModal: true,
@@ -14,24 +19,27 @@ export default class C2Server extends Component {
     localNetwork: "",
     localAddress: "",
     dateConnected: "",
+    devices:{},
     errors: {},
+    devicesError: null,
     online: null,
     offline: null,
     socket: null,
     socketConnected: false,
     redbotConnected: false,
-    activeKey: null
+    activeKey: null,
+    addDeviceResponse: null
   }
 
   initConnect = e => {
     e.preventDefault()
     this.disconnect()
     this.setState({ errors: {} })
-    const redbot = {
+    const controller = {
       name: this.state.name,
       password: this.state.password
     }
-    axios.post("/api/controller/connect", redbot)
+    axios.post("/api/controller/connect", controller)
       .then(res => {
         this.setState({
           localNetwork: res.data.localNetwork,
@@ -43,12 +51,28 @@ export default class C2Server extends Component {
             console.log(this.state)
           })
         this.toggleModal()
+        this.getDevices()
       })
       .catch(err => {
         this.setState({
           errors: err.response.data
         })
       })
+  }
+
+  getDevices() {
+    const controller = {
+      name: this.state.name,
+      password: this.state.password
+    }
+    axios.post("/api/devices/all", controller)
+      .then(res => {
+        this.setState({ devices: res.data.devices })
+      })
+      .catch(err => {
+        this.setState({ devicesError: "Error getting devices. Try refreshing." })
+      })
+    this.intervalID = setTimeout(this.getDevices.bind(this), 5000)
   }
 
   showConnectModal = e => {
@@ -73,7 +97,7 @@ export default class C2Server extends Component {
   disconnect = () => {
     if (this.state.socket !== null) {
       disconnect(this.state.socket)
-      this.setState({ showModal: true })
+      clearTimeout(this.intervalID)
     } else {
       console.log("Not connected to a socket")
     }
@@ -87,10 +111,15 @@ export default class C2Server extends Component {
   render() {
     return (
       <div>
-        <Header activePage="C2 Server" />
+        <Header />
         <ConnectModal show={this.state.showModal} onHide={this.toggleModal} errors={this.state.errors} onChange={this.onChange} name={this.state.name} passowrd={this.state.password} connect={this.initConnect} />
-        <div className="container-flname mt-5 pt-5">
-          {/* <Table connect={this.showConnectModal} />           */}
+        <div className="container-fluid mt-5 pt-5">
+          <ControllerStatusBox name={this.state.name} sendCommand={this.sendCommand} add_device={add_device} addDeviceResponse={this.state.addDeviceResponse} dashboardStatus={this.state.socketConnected} controllerStatus={this.state.redbotConnected} disconnect={this.disconnect} activeKey={this.state.activeKey} localNetwork={this.state.localNetwork} localAddress={this.state.localAddress} dataConnected={this.state.dateConnected} />
+        </div>
+        <div className="container-fluid d-flex">
+          {
+            (this.state.devicesError === null) ? <Devices devices={this.state.devices} /> : <InputError error={this.state.devicesError} />
+          }
         </div>
       </div>
     )

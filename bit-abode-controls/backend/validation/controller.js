@@ -1,7 +1,7 @@
 const Validator = require("validator")
 const isEmpty = require("is-empty")
 
-module.exports = function validateRedbot(data) {
+module.exports = function validateController(data) {
     let errors = {}
   
     data.name = !isEmpty(data.name) ? data.name : ""

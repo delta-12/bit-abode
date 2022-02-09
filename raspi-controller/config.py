@@ -11,14 +11,15 @@ name = config["Controller"]["name"]
 password = config["Controller"]["password"]
 serial_port = config["Controller"]["serial_port"]
 baudrate = config["Controller"]["baudrate"]
+controller_key = config["Controller"]["controller_key"]
 
 # Server info
 host = config["Server"]["host"]
 
 
 # add uid to config.ini
-def add_uid(uid):
-    config["Controller"]["uid"] = uid
+def add_controller_key(controller_key):
+    config["Controller"]["controller_key"] = controller_key
     with open("config.ini", "w") as conf:
         config.write(conf)
         conf.close()
