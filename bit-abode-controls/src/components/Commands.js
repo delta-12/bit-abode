@@ -4,6 +4,12 @@ let add_device = {
     data: {}
 }
 
+let remove_device = {
+    type: "remove_device",
+    id: 0,
+    data: {}
+}
+
 let lightsOff = {
     type: "lights",
     command: 0
@@ -14,4 +20,4 @@ let lightsOn = {
     command: 1
 }
 
-export { add_device, lightsOff, lightsOn }
+export { add_device, remove_device, lightsOff, lightsOn }

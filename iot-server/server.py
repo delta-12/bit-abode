@@ -7,7 +7,7 @@ import asyncio
 import json
 import secrets
 import websockets
-from request_handler import add_controller, change_controller_status, add_device
+from request_handler import add_controller, change_controller_status, add_device, remove_device
 
 JOIN = {}
 
@@ -33,11 +33,15 @@ async def receive_command(websocket, connected):
                 "type": "add_device",
                 "id": 2
             }
-            if add_device(command["data"]):
-                add_device_msg["response"] = True
-            else:
-                add_device_msg["response"] = False
+            add_device_msg["response"] = add_device(command["data"])
             websockets.broadcast(connected, json.dumps(add_device_msg))
+        if command["type"] == "remove_device" and command["id"] == 1:
+            remove_device_msg = {
+                "type": "remove_device",
+                "id": 2
+            }
+            remove_device_msg["response"] = remove_device(command["data"])
+            websockets.broadcast(connected, json.dumps(remove_device_msg))
 
 
 # Handle a connection from the Controller

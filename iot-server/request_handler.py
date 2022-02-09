@@ -32,3 +32,13 @@ def add_device(data):
     if r.status_code == 200:
         return True
     return False
+
+
+# make post request to api endpoint to remove device from db
+def remove_device(data):
+    r = requests.post(url=controller_endpoint +
+                      "/devices/removeDevice", data=data)
+    # return info about whether device has been added or not
+    if r.status_code == 200:
+        return True
+    return False

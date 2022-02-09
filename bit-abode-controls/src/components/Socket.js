@@ -15,7 +15,7 @@ let connect = (key, cb) => {
     console.log(msgJSON)
     switch (msgJSON.type) {
       case "checkConnected":
-        cb({ redbotConnected: msgJSON.status })
+        cb({ controllerConnected: msgJSON.status })
         if (msgJSON.status === false) {
           disconnect(socket)
         }
@@ -32,7 +32,7 @@ let connect = (key, cb) => {
 
   socket.onclose = event => {
     console.log("Socket Closed Connection: ", event)
-    cb({ socket: null, socketConnected: false, redbotConnected: false, showModal: true, name: "", password: "" })
+    cb({ socket: null, socketConnected: false, controllerConnected: false, showModal: true, name: "", password: "", errors: {}, devicesError: null })
   }
 
   socket.onerror = error => {

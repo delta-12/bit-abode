@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from distutils import command
 import re
 from struct import pack
 import uuid
@@ -86,6 +87,23 @@ class CommandHandler(object):
             AD.device_type = command["data"]["type"]
             AD.port = command["data"]["port"]
             self.msg = AD.export_req(AD)
+            return True
+        return False
+
+    def remove_device(self):
+        command = self.current_command
+        if command["id"] == 0:
+            self.action = 'r'
+            data = {
+                "uid": command["data"]["uid"],
+                "controllerKey": self.controllerKey
+            }
+            req = {
+                "type": "remove_device",
+                "id": 1,
+                "data": data
+            }
+            self.msg = req
             return True
         return False
 

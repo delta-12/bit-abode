@@ -16,20 +16,19 @@ router.post("/addDevice", (req, res) => {
         if (device) {
             return res.status(400).json({ name: "Duplicate UID"})
         }
-        const newDevice = new Device({
+        let newDevice = new Device({
             UID: req.body.uid,
             type: req.body.type,
             port: req.body.port,
             name: req.body.name,
             controller: req.body.controller,
-            controllerKey: req.body.controllerKey,
             state: req.body.state,
             dateConnected: new Date().getTime()
         })
         bcrypt.genSalt(10, (err, salt) => {
             bcrypt.hash(req.body.controllerKey, salt, (err, hash) => {
                 if (err) throw err
-                newDevice.password = hash
+                newDevice.controllerKey = hash
                 newDevice
                     .save()
                     .then(device => res.status(200).json(device))
@@ -45,7 +44,7 @@ router.post("/addDevice", (req, res) => {
 router.post("/removeDevice", (req, res) => {
     Device.findOne({ UID: req.body.uid }).then(device => {
         if (!device) {
-            return res.status(400).json({ auth: "UID not found" })
+            return res.status(400).json({ auth: "Incorrect UID or Controller Key" })
         }
         bcrypt.compare(req.body.controllerKey, device.controllerKey).then(isMatch => {
             if (isMatch) {
