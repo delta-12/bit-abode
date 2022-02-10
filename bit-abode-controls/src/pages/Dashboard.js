@@ -113,14 +113,19 @@ export default class Dashboard extends Component {
       <div>
         <Header />
         <ConnectModal show={this.state.showModal} onHide={this.toggleModal} errors={this.state.errors} onChange={this.onChange} name={this.state.name} passowrd={this.state.password} connect={this.initConnect} />
-        <div className="container-fluid mt-5 pt-5">
-          <ControllerStatusBox name={this.state.name} sendCommand={this.sendCommand} add_device={add_device} addDeviceResponse={this.state.addDeviceResponse} dashboardStatus={this.state.socketConnected} controllerStatus={this.state.controllerConnected} disconnect={this.disconnect} activeKey={this.state.activeKey} localNetwork={this.state.localNetwork} localAddress={this.state.localAddress} dataConnected={this.state.dateConnected} />
-        </div>
-        <div className="container-fluid d-flex">
-          {
-            (this.state.devicesError === null && this.state.devices !== null) ? <Devices devices={this.state.devices} sendCommand={this.sendCommand} /> : <InputError error={this.state.devicesError} />
-          }
-        </div>
+        {
+          (this.state.socketConnected) ? 
+          <div>
+            <div className="container-fluid mt-5 pt-5">
+              <ControllerStatusBox name={this.state.name} sendCommand={this.sendCommand} add_device={add_device} addDeviceResponse={this.state.addDeviceResponse} dashboardStatus={this.state.socketConnected} controllerStatus={this.state.controllerConnected} disconnect={this.disconnect} activeKey={this.state.activeKey} localNetwork={this.state.localNetwork} localAddress={this.state.localAddress} dataConnected={this.state.dateConnected} />
+            </div>
+            <div className="container-fluid d-flex">
+              {
+                (this.state.devicesError === null && this.state.devices !== null) ? <Devices devices={this.state.devices} sendCommand={this.sendCommand} /> : <InputError error={this.state.devicesError} />
+              }
+            </div>
+          </div> : null
+        }
       </div>
     )
   }
