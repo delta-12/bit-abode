@@ -6,7 +6,7 @@ void setup(void)
 {
   Serial.begin(9600);
   pinMode(5, OUTPUT );
-  pinMode(3, OUTPUT);
+  pinMode(9, OUTPUT);
 }
 
 void loop(void)
@@ -37,6 +37,7 @@ void parseBytes(byte *buf)
 void lights(byte *buf)
 {
   int port = buf[1];
+//  int port = 9;
   int cmd = buf[2];
   
   if (cmd == 1)

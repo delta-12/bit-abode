@@ -27,7 +27,7 @@ export default class AddDeviceModal extends Component {
                         <option value={3}>3</option>
                         <option value={4}>4</option>
                         <option value={5}>5</option>
-                        <option value={6}>6</option>
+                        <option value={9}>9</option>
                     </select>
                     {
                         (this.props.success) ? <small className="form-text text-success mb-2">Successfully added device.</small> :

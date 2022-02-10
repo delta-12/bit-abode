@@ -38,4 +38,12 @@ let alarmOn = {
     command: 1
 }
 
-export { add_device, remove_device, lightsOff, lightsOn, alarmOff, alarmOn }
+let setAlarm = {
+    type: "alarm",
+    port: "",
+    id: 0,
+    command: 1,
+    set_time: ""
+}
+
+export { add_device, remove_device, lightsOff, lightsOn, alarmOff, alarmOn, setAlarm }
