@@ -32,7 +32,8 @@ async def main(CH):
                     print(CH.cmd)
                     SC.write(CH.cmd)
                     msg = CH.current_command
-                    msg["id"] = 2
+                    msg["id"] = 1
+                    msg["controllerKey"] = controller_key
                     await websocket.send(json.dumps(msg))
 
 

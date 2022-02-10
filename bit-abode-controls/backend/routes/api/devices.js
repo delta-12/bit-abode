@@ -96,9 +96,6 @@ router.post("/changeDeviceState", (req, res) => {
         }
         bcrypt.compare(req.body.controllerKey, device.controllerKey).then(isMatch => {
             if (isMatch) {
-                device.name = req.body.name
-                device.localNetwork = req.body.localNetwork
-                device.localAddress = req.body.localAddress
                 device.state = req.body.state
                 device
                     .save()
