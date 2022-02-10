@@ -1,7 +1,7 @@
 let connect = (key, cb) => {
   console.log("Attempting Connection...")
-  let socket = new WebSocket("ws://localhost:10801")
-  // let socket = new WebSocket("wss://bit-abode-iot-server.herokuapp.com")
+  // let socket = new WebSocket("ws://localhost:10801")
+  let socket = new WebSocket("wss://bit-abode-iot-server.herokuapp.com")
   socket.onopen = () => {
     console.log("Successfully Connected")
     cb({ socket: socket, socketConnected: true })
