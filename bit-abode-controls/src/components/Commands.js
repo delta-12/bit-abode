@@ -20,7 +20,6 @@ let lightsOff = {
 let lightsOn = {
     type: "lights",
     port: "",
-    id: 0,
     command: 1
 }
 
