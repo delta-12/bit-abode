@@ -32,6 +32,8 @@ async def main(CH):
                     print(CH.cmd)
                     SC.write(CH.cmd)
                     msg = CH.current_command
+                    msg["device"] = msg["type"]
+                    msg["type"] = "changeDeviceState"
                     msg["id"] = 1
                     msg["controllerKey"] = controller_key
                     await websocket.send(json.dumps(msg))

@@ -24,10 +24,10 @@ export default class DeviceCard extends Component {
   getType() {
     switch (this.props.type) {
       case "lights":
-        this.setState({ bg: "bg-primary", content: <Lights sendCommand={this.props.sendCommand} uid={this.props.uid} port={this.props.port} /> })
+        this.setState({ bg: "bg-primary", content: <Lights sendCommand={this.props.sendCommand} uid={this.props.uid} port={this.props.port} state={this.props.state} /> })
         break
       case "alarm":
-        this.setState({ bg: "bg-info", content: <Alarm sendCommand={this.props.sendCommand} uid={this.props.uid} port={this.props.port} /> })
+        this.setState({ bg: "bg-info", content: <Alarm sendCommand={this.props.sendCommand} uid={this.props.uid} port={this.props.port} state={this.props.state} /> })
         break
       default:
         break

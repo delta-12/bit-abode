@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import os
-from re import X
 import signal
 import asyncio
 import json
@@ -35,29 +34,28 @@ async def receive_command(websocket, connected):
             }
             add_device_msg["response"] = add_device(command["data"])
             websockets.broadcast(connected, json.dumps(add_device_msg))
-        if command["type"] == "remove_device" and command["id"] == 1:
+        elif command["type"] == "remove_device" and command["id"] == 1:
             remove_device_msg = {
                 "type": "remove_device",
                 "id": 2
             }
             remove_device_msg["response"] = remove_device(command["data"])
             websockets.broadcast(connected, json.dumps(remove_device_msg))
-        if command["type"] == "lights" or command["type"] == "alarm" and command["id"] == 1:
+        elif command["type"] == "changeDeviceState" and command["id"] == 1 and (command["device"] == "lights" or command["device"] == "alarm"):
             state_msg = {
                 "uid": command["uid"],
                 "controllerKey": command["controllerKey"],
-                "id": 2
             }
             if command["command"] == 1:
                 state_msg["state"] = "On"
             if command["command"] == 0:
                 state_msg["state"] = "Off"
-            success_msg = {
-                "success": change_device_state(state_msg)
-            }
+            success_msg = command
+            success_msg["id"] = 2
+            success_msg["success"] = change_device_state(state_msg)
             websockets.broadcast(connected, json.dumps(success_msg))
-            # add_device_msg["response"] = add_device(command["data"])
-            # websockets.broadcast(connected, json.dumps(state_msg))
+        else:
+            pass
 
 
 # Handle a connection from the Controller

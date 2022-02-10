@@ -4,7 +4,7 @@ from struct import pack
 import uuid
 
 
-class LightsCommand(object):
+class LightsAndAlarmCommand(object):
     def __init__(self, command, port, state):
         self.command = command
         self.port = port
@@ -109,11 +109,27 @@ class CommandHandler(object):
         command = self.current_command
         if "command" in command:
             if command["id"] == 0:
-                LC = LightsCommand
+                LC = LightsAndAlarmCommand
                 if type(command["command"]) == int:
                     LC.port = command["port"]
                     LC.command = command["command"]
                     self.cmd = LC.export_command(LC)
                     self.action = 's'
                     return True
+        return False
+
+    def alarm(self):
+        command = self.current_command
+        if "command" in command:
+            if command["id"] == 0:
+                LC = LightsAndAlarmCommand
+                if type(command["command"]) == int:
+                    LC.port = command["port"]
+                    LC.command = command["command"]
+                    self.cmd = LC.export_command(LC)
+                    self.action = 's'
+                    return True
+        return False
+
+    def changeDeviceState(self):
         return False
