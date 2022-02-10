@@ -5,6 +5,8 @@ import { remove_device } from "../Commands"
 
 export default class DeviceCard extends Component {
 
+  intervalID
+
   state = {
     bg: "",
     content: null
@@ -12,6 +14,10 @@ export default class DeviceCard extends Component {
 
   componentDidMount() {
     this.getType()
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.intervalID)
   }
 
   deleteDevice = () => {
@@ -32,6 +38,7 @@ export default class DeviceCard extends Component {
       default:
         break
     }
+    this.intervalID = setTimeout(this.getType.bind(this), 1000)
   }
 
   render() {

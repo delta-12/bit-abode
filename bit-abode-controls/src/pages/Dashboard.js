@@ -72,7 +72,7 @@ export default class Dashboard extends Component {
       .catch(err => {
         this.setState({ devicesError: "Error getting devices. Try refreshing." })
       })
-    this.intervalID = setTimeout(this.getDevices.bind(this), 5000)
+    this.intervalID = setTimeout(this.getDevices.bind(this), 3000)
   }
 
   showConnectModal = e => {
