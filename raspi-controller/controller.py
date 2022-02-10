@@ -6,10 +6,10 @@ import json
 import uuid
 from config import host, name, password, serial_port, baudrate, controller_key as config_controller_key, add_controller_key, get_local_address
 from commands import CommandHandler
-# from serial_com import SerialCom
+from serial_com import SerialCom
 
 controller_key = ""
-# SC = SerialCom(serial_port, baudrate)
+SC = SerialCom(serial_port, baudrate)
 
 
 async def main(CH):
@@ -30,7 +30,10 @@ async def main(CH):
                 if CH.action == 's':
                     print("Sending to serial...")
                     print(CH.cmd)
-                    # SC.write(CH.cmd)
+                    SC.write(CH.cmd)
+                    msg = CH.current_command
+                    msg["id"] = 2
+                    await websocket.send(json.dumps(msg))
 
 
 if __name__ == "__main__":
@@ -40,5 +43,5 @@ if __name__ == "__main__":
     else:
         controller_key = config_controller_key
     CH = CommandHandler(name, controller_key)
-    # SC.reset_buffer()
+    SC.reset_buffer()
     asyncio.run(main(CH))

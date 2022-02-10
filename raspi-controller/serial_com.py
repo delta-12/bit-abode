@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import serial
+from time import sleep
 
 
 class SerialCom(object):

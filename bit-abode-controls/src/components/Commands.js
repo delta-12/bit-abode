@@ -13,12 +13,14 @@ let remove_device = {
 let lightsOff = {
     type: "lights",
     port: "",
+    id: 0,
     command: 0
 }
 
 let lightsOn = {
     type: "lights",
     port: "",
+    id: 0,
     command: 1
 }
 

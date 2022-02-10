@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-from distutils import command
-import re
 from struct import pack
 import uuid
 
@@ -110,10 +108,12 @@ class CommandHandler(object):
     def lights(self):
         command = self.current_command
         if "command" in command:
-            LC = LightsCommand
-            if type(command["command"]) == int:
-                LC.command = command["command"]
-                self.cmd = LC.export_command(LC)
-                self.action = 's'
-                return True
+            if command["id"] == 0:
+                LC = LightsCommand
+                if type(command["command"]) == int:
+                    LC.port = command["port"]
+                    LC.command = command["command"]
+                    self.cmd = LC.export_command(LC)
+                    self.action = 's'
+                    return True
         return False
