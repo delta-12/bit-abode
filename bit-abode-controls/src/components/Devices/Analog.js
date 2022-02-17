@@ -6,7 +6,9 @@ export default class Analog extends Component {
     intervalID
 
     state = {
-        value: 0
+        value: 0,
+        preValue: 0,
+        count: 0
     }
 
     componentDidMount() {
@@ -18,11 +20,22 @@ export default class Analog extends Component {
     }
 
     sendCmd() {
-        let command = setAnalog
-        command.command = this.state.value
-        command.port = this.props.port
-        command.uid = this.props.uid
-        this.props.sendCommand(command)
+        if (this.state.count < 3) {
+            let command = setAnalog
+            command.command = this.state.value
+            command.port = this.props.port
+            command.uid = this.props.uid
+            this.props.sendCommand(command)
+            this.setState({
+                preValue: this.state.value,
+                count: this.state.count+1
+            })
+        } else {
+            if (this.state.preValue !== this.state.value)
+            {
+                this.setState({ count: 0 })
+            }
+        }
         this.intervalID = setTimeout(this.sendCmd.bind(this), 1000)
     }
 
