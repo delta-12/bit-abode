@@ -12,7 +12,9 @@ export default class Analog extends Component {
     }
 
     componentDidMount() {
-        this.sendCmd()
+        setTimeout(() => {
+            this.sendCmd()
+        }, 5000)
     }
     
     componentWillUnmount() {
