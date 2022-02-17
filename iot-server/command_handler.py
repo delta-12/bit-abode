@@ -31,7 +31,7 @@ class CommandHandler(object):
             self.r.make_request()
             self.msg = {
                 "type": "request_response",
-                "reponse": self.r.resonse
+                "response": self.r.response
             }
-            return True
+            # return True
         return False
