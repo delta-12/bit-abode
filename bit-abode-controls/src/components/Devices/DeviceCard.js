@@ -33,7 +33,7 @@ export default class DeviceCard extends Component {
         this.setState({ bg: "bg-primary", content: <Digital sendCommand={this.props.sendCommand} uid={this.props.uid} port={this.props.port} state={this.props.state} /> })
         break
       case "analog":
-        this.setState({ bg: "bg-primary", content: <Analog sendCommand={this.props.sendCommand} uid={this.props.uid} port={this.props.port} state={this.props.state} /> })
+        this.setState({ bg: "bg-info", content: <Analog sendCommand={this.props.sendCommand} uid={this.props.uid} port={this.props.port} state={this.props.state} /> })
         break
       default:
         break

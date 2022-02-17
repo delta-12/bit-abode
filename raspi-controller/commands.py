@@ -144,10 +144,10 @@ class CommandHandler(object):
     def analog(self):
         command = self.current_command
         if "command" in command:
-            if type(command["command"]) == int:
+            if type(command["command"]) == str:
                 AC = AnalogCommand
                 AC.port = command["port"]
-                AC.command = command["command"]
+                AC.command = int(command["command"])
                 self.cmd = AC.export_command(AC)
                 self.action = 's'
                 return True
