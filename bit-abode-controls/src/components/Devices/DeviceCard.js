@@ -1,6 +1,6 @@
 import { Component } from "react"
-import Lights from "./Lights"
-import Alarm from "./Alarm"
+import Digital from "./Digital"
+import Analog from "./Analog"
 import { remove_device } from "../Commands"
 
 export default class DeviceCard extends Component {
@@ -29,11 +29,11 @@ export default class DeviceCard extends Component {
 
   getType() {
     switch (this.props.type) {
-      case "lights":
-        this.setState({ bg: "bg-primary", content: <Lights sendCommand={this.props.sendCommand} uid={this.props.uid} port={this.props.port} state={this.props.state} /> })
+      case "digital":
+        this.setState({ bg: "bg-primary", content: <Digital sendCommand={this.props.sendCommand} uid={this.props.uid} port={this.props.port} state={this.props.state} /> })
         break
-      case "alarm":
-        this.setState({ bg: "bg-info", content: <Alarm sendCommand={this.props.sendCommand} uid={this.props.uid} port={this.props.port} state={this.props.state} /> })
+      case "analog":
+        this.setState({ bg: "bg-primary", content: <Analog sendCommand={this.props.sendCommand} uid={this.props.uid} port={this.props.port} state={this.props.state} /> })
         break
       default:
         break

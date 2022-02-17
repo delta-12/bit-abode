@@ -4,7 +4,7 @@ from struct import pack
 import uuid
 
 
-class LightsCommand(object):
+class DigitalCommand(object):
     def __init__(self, command, port, state):
         self.command = command
         self.port = port
@@ -14,7 +14,7 @@ class LightsCommand(object):
         return int(max(min(maxN, n), minN))
 
     def clamp_vals(self):
-        self.port = self.clamp(self.port, 1, 6)
+        self.port = self.clamp(self.port, 0, 13)
         self.command = self.clamp(self.command, 0, 1)
 
     def export_command(self):
@@ -22,72 +22,50 @@ class LightsCommand(object):
         return pack("<3B", 0, self.port, self.command)
 
 
-class AlarmCommand(object):
-    def __init__(self, command, port, state, trigger_time, trigger, uid):
+class AnalogCommand(object):
+    def __init__(self, command, port, state):
         self.command = command
         self.port = port
         self.state = state
-        self.trigger_time = trigger_time
-        self.trigger = trigger
-        self.uid = uid
 
     def clamp(n, minN, maxN):
         return int(max(min(maxN, n), minN))
 
     def clamp_vals(self):
-        self.port = self.clamp(self.port, 1, 6)
-        self.command = self.clamp(self.command, 0, 1)
-
-    def export_trigger(self):
-        trigger_device = {
-            "command": pack("<3B", 0, self.port, self.command),
-            "trigger_time": self.trigger_time,
-            "device": "alarm",
-            "uid": self.uid
-        }
-        return trigger_device
+        self.port = self.clamp(self.port, 0, 13)
+        self.command = self.clamp(self.command, 0, 255)
 
     def export_command(self):
         self.clamp_vals(self)
-        return pack("<3B", 0, self.port, self.command)
+        return pack("<3B", 1, self.port, self.command)
 
 
-class AddDevice(object):
-    def __init__(self, name, device_type, port, controllerKey, controller):
-        self.name = name
-        self.device_type = device_type
-        self.port = port
-        self.controllerKey = controllerKey
-        self.controller = controller
+# class AlarmCommand(DigitalCommand):
+#     def __init__(self, command, port, state, trigger_time, trigger, uid):
+#         DigitalCommand.__init__(self, command, port, state)
+#         self.trigger_time = trigger_time
+#         self.trigger = trigger
+#         self.uid = uid
 
-    def export_req(self):
-        data = {
-            "uid": str(uuid.uuid4()),
-            "type": self.device_type,
-            "port": self.port,
-            "name": self.name,
-            "controllerKey": self.controllerKey,
-            "controller": self.controller,
-        }
-        req = {
-            "type": "add_device",
-            "id": 1,
-            "data": data
-        }
-        return req
+#     def export_trigger(self):
+#         trigger_device = {
+#             "command": pack("<3B", 0, self.port, self.command),
+#             "trigger_time": self.trigger_time,
+#             "device": "alarm",
+#             "uid": self.uid
+#         }
+#         return trigger_device
 
 
 class CommandHandler(object):
-    def __init__(self, controller, controllerKey, trigger_devices):
+    def __init__(self, controller, controllerKey):
         self.controller = controller
         self.controllerKey = controllerKey
-        self.trigger_devices = trigger_devices
 
     current_command = {}
     msg = {}
     cmd = b''
     action = ''
-    trigger_device = object
 
     def parse_command(self, command):
         if "type" in command and type(command["type"]) == str:
@@ -110,13 +88,22 @@ class CommandHandler(object):
         command = self.current_command
         if command["id"] == 0:
             self.action = 'r'
-            AD = AddDevice
-            AD.controller = self.controller
-            AD.controllerKey = self.controllerKey
-            AD.name = command["data"]["name"]
-            AD.device_type = command["data"]["type"]
-            AD.port = command["data"]["port"]
-            self.msg = AD.export_req(AD)
+            data = {
+                "uid": str(uuid.uuid4()),
+                "name": command["data"]["name"],
+                "type": command["data"]["type"],
+                "port": command["data"]["port"],
+                "controllerKey": self.controllerKey,
+                "controller": self.controller,
+            }
+            req = {
+                "type": "request",
+                "id": 1,
+                "request_type": "post",
+                "route": "/devices/addDevice",
+                "data": data
+            }
+            self.msg = req
             return True
         return False
 
@@ -129,49 +116,39 @@ class CommandHandler(object):
                 "controllerKey": self.controllerKey
             }
             req = {
-                "type": "remove_device",
+                "type": "request",
                 "id": 1,
+                "request_type": "post",
+                "route": "/devices/removeDevice",
                 "data": data
             }
             self.msg = req
             return True
         return False
 
-    def lights(self):
-        command = self.current_command
-        if "command" in command:
-            if command["id"] == 0:
-                LC = LightsCommand
-                if type(command["command"]) == int:
-                    LC.port = command["port"]
-                    LC.command = command["command"]
-                    self.cmd = LC.export_command(LC)
-                    self.action = 's'
-                    return True
+    def request_reponse(self):
         return False
 
-    def alarm(self):
+    def digital(self):
         command = self.current_command
         if "command" in command:
-            if command["id"] == 0:
-                AC = AlarmCommand
-                print("ALARM")
-                if "set_time" in command:
-                    AC.trigger_time = command["set_time"]
-                    AC.port = command["port"]
-                    AC.command = 1
-                    AC.trigger = True
-                    AC.uid = command["uid"]
-                    self.cmd = AC.export_trigger(AC)
-                    self.action = 'td'
-                    return True
-                if type(command["command"]) == int:
-                    AC.port = command["port"]
-                    AC.command = command["command"]
-                    self.cmd = AC.export_command(AC)
-                    self.action = 's'
-                    return True
+            if type(command["command"]) == int:
+                DC = DigitalCommand
+                DC.port = command["port"]
+                DC.command = command["command"]
+                self.cmd = DC.export_command(DC)
+                self.action = 's'
+                return True
         return False
 
-    def changeDeviceState(self):
+    def analog(self):
+        command = self.current_command
+        if "command" in command:
+            if type(command["command"]) == int:
+                AC = AnalogCommand
+                AC.port = command["port"]
+                AC.command = command["command"]
+                self.cmd = AC.export_command(AC)
+                self.action = 's'
+                return True
         return False

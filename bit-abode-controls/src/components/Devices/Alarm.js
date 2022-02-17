@@ -1,6 +1,6 @@
 import { Component } from "react"
 import classnames from "classnames"
-import { alarmOn, alarmOff, setAlarm } from "../Commands"
+import { digitalOff, digitalOn, setAlarm } from "../Commands"
 
 export default class Alarm extends Component {
 
@@ -15,7 +15,7 @@ export default class Alarm extends Component {
       }
 
     onClick = () => {
-        let command = (this.props.state === "On") ? alarmOff : alarmOn
+        let command = (this.props.state === "On") ? digitalOff : digitalOn
         command.port = this.props.port
         command.uid = this.props.uid
         this.props.sendCommand(command)

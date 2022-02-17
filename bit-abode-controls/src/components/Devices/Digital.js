@@ -1,11 +1,11 @@
 import { Component } from "react"
 import classnames from "classnames"
-import { lightsOn, lightsOff } from "../Commands"
+import { digitalOff, digitalOn } from "../Commands"
 
-export default class Lights extends Component {
+export default class Digital extends Component {
 
     onClick = () => {
-        let command = (this.props.state === "On") ? lightsOff : lightsOn
+        let command = (this.props.state === "On") ? digitalOff : digitalOn
         command.port = this.props.port
         command.uid = this.props.uid
         this.props.sendCommand(command)

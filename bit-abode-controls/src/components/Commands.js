@@ -10,40 +10,24 @@ let remove_device = {
     data: {}
 }
 
-let lightsOff = {
-    type: "lights",
-    port: "",
-    id: 0,
+let digitalOff = {
+    type: "digital",
     command: 0
 }
 
-let lightsOn = {
-    type: "lights",
-    port: "",
-    id: 0,
+let digitalOn = {
+    type: "digital",
     command: 1
 }
 
-let alarmOff = {
-    type: "alarm",
-    port: "",
-    id: 0,
+let setAnalog = {
+    type: "analog",
     command: 0
-}
-
-let alarmOn = {
-    type: "alarm",
-    port: "",
-    id: 0,
-    command: 1
 }
 
 let setAlarm = {
-    type: "alarm",
-    port: "",
-    id: 0,
-    command: 1,
-    set_time: ""
+    type: "set_alarm",
+    command: 1
 }
 
-export { add_device, remove_device, lightsOff, lightsOn, alarmOff, alarmOn, setAlarm }
+export { add_device, remove_device, digitalOn, digitalOff, setAnalog, setAlarm }

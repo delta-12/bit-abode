@@ -6,9 +6,12 @@ import asyncio
 import json
 import secrets
 import websockets
-from request_handler import add_controller, change_controller_status, add_device, remove_device, change_device_state
+from request_handler import Request
+from command_handler import CommandHandler
 
 JOIN = {}
+CH = CommandHandler
+RH = Request
 
 
 # Send an error message
@@ -26,36 +29,8 @@ async def receive_command(websocket, connected):
         command = json.loads(message)
         print(command)
         # broadcast commands
-        websockets.broadcast(connected, json.dumps(command))
-        if command["type"] == "add_device" and command["id"] == 1:
-            add_device_msg = {
-                "type": "add_device",
-                "id": 2
-            }
-            add_device_msg["response"] = add_device(command["data"])
-            websockets.broadcast(connected, json.dumps(add_device_msg))
-        elif command["type"] == "remove_device" and command["id"] == 1:
-            remove_device_msg = {
-                "type": "remove_device",
-                "id": 2
-            }
-            remove_device_msg["response"] = remove_device(command["data"])
-            websockets.broadcast(connected, json.dumps(remove_device_msg))
-        elif command["type"] == "changeDeviceState" and command["id"] == 1 and (command["device"] == "lights" or command["device"] == "alarm"):
-            state_msg = {
-                "uid": command["uid"],
-                "controllerKey": command["controllerKey"],
-            }
-            if command["command"] == 1:
-                state_msg["state"] = "On"
-            if command["command"] == 0:
-                state_msg["state"] = "Off"
-            success_msg = command
-            success_msg["id"] = 2
-            success_msg["success"] = change_device_state(state_msg)
-            websockets.broadcast(connected, json.dumps(success_msg))
-        else:
-            pass
+        if CH.handle_command(CH, command):
+            websockets.broadcast(connected, json.dumps(CH.msg))
 
 
 # Handle a connection from the Controller
@@ -79,13 +54,27 @@ async def start(websocket, event):
             "localAddress": event["localAddress"],
             "key": key
         }
-        if add_controller(data):
+        RH.request_type = "post"
+        RH.route = "/controller/addController"
+        RH.data = data
+        RH.make_request(RH)
+        if RH.response.status_code == 200:
             print("Controller with Name " +
                   event["name"] + " successfully connected")
             # receive and send commands if Controller is successfully added to db
             response["success"] = True
             await websocket.send(json.dumps(response))
             await receive_command(websocket, connected)
+        elif "Duplicate Name" in RH.response.text:
+            RH.route = "/controller/changeControllerStatus"
+            RH.make_request(RH)
+            if RH.response.status_code == 200:
+                print("Controller with Name " +
+                      event["name"] + " successfully connected")
+                # receive and send commands if Controller is successfully added to db
+                response["success"] = True
+                await websocket.send(json.dumps(response))
+                await receive_command(websocket, connected)
         else:
             print("Controller with Name " +
                   event["name"] + " did not successfully connected")
@@ -95,7 +84,11 @@ async def start(websocket, event):
         print("Controller with Name " + event["name"] + " disconnecting")
         del JOIN[key]
         data["status"] = "0"
-        if change_controller_status(data):
+        RH.request_type = "post"
+        RH.route = "/controller/changeControllerStatus"
+        RH.data = data
+        RH.make_request(RH)
+        if RH.response.status_code == 200:
             print("Successfully updated Controller with Name " +
                   event["name"] + " to status offline")
             msg = {

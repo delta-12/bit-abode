@@ -4,51 +4,18 @@ import requests
 from config import controller_endpoint
 
 
-# make post request to api endpoint to add controller to db
-def add_controller(data):
-    r = requests.post(url=controller_endpoint +
-                      "/controller/addController", data=data)
-    # return info about whether controller has been added or status toggled
-    if r.status_code == 200:
-        return True
-    if "Duplicate Name" in r.text:
-        return change_controller_status(data)
-    return False
+class Request(object):
+    response = None
 
+    def __init__(self, request_type, route, data):
+        self.request_type = request_type
+        self.route = route
+        self.data = data
 
-# make post request to api endpoint to change controller status in db
-def change_controller_status(data):
-    r = requests.post(url=controller_endpoint +
-                      "/controller/changeControllerStatus", data=data)
-    if r.status_code == 200:
-        return True
-    return False
-
-
-# make post request to api endpoint to add device to db
-def add_device(data):
-    r = requests.post(url=controller_endpoint+"/devices/addDevice", data=data)
-    # return info about whether device has been added or not
-    if r.status_code == 200:
-        return True
-    return False
-
-
-# make post request to api endpoint to remove device from db
-def remove_device(data):
-    r = requests.post(url=controller_endpoint +
-                      "/devices/removeDevice", data=data)
-    # return info about whether device has been added or not
-    if r.status_code == 200:
-        return True
-    return False
-
-
-# make post request to api endpoint to update device state in db
-def change_device_state(data):
-    r = requests.post(url=controller_endpoint +
-                      "/devices/changeDeviceState", data=data)
-    # return info about whether device has been added or not
-    if r.status_code == 200:
-        return True
-    return False
+    def make_request(self):
+        print("Making request...")
+        if self.request_type == "post":
+            self.response = requests.post(
+                url=controller_endpoint + self.route, data=self.data)
+        elif self.request_type == "get":
+            self.response = requests.get(url=controller_endpoint + self.route)
