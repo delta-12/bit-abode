@@ -4,6 +4,7 @@ import asyncio
 import websockets
 import json
 import uuid
+import requests
 from config import host, name, password, serial_port, baudrate, controller_key as config_controller_key, add_controller_key, get_local_address
 from commands import CommandHandler
 from serial_com import SerialCom
@@ -52,6 +53,16 @@ async def main(CH):
 
 
 if __name__ == "__main__":
+    # wait for internet connection
+    internet = False
+    while internet == False:
+        try:
+            request = requests.get(
+                "https://bit-abode-controls.herokuapp.com/", timeout=5)
+            print("Connected to internet.")
+            internet = True
+        except:
+            continue
     if len(config_controller_key) == 0:
         controller_key = str(uuid.uuid4())
         add_controller_key(controller_key)
